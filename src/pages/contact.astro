@@ -1,0 +1,39 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ContactForm from '../components/ContactForm.astro';
+---
+
+<Layout title="Contact | Story Mode">
+  <main class="min-h-screen bg-white">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+      <h1 class="text-6xl font-editorial mb-12">Let's Chat</h1>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div>
+          <p class="text-2xl mb-6">
+            Got a project in mind? Want to make your product sound amazing? Or just want to say hi?
+          </p>
+          <p class="text-xl mb-8">
+            Drop us a line and we'll get back to you faster than you can say "sonic branding"!
+          </p>
+          
+          <div class="space-y-4">
+            <p class="text-xl">
+              <strong>Email:</strong> 
+              <a href="mailto:sam@storymode.ca" class="text-blue-600 hover:underline">
+                sam@storymode.ca
+              </a>
+            </p>
+            <p class="text-xl">
+              <strong>Location:</strong> Montreal, Quebec
+            </p>
+          </div>
+        </div>
+        
+        <div>
+          <ContactForm />
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

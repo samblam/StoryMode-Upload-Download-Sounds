@@ -1,0 +1,78 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content="Story Mode is a cutting edge audio branding and UX sound design studio in Montreal, Canada. We care about making interactive audio unforgettable." />
+    
+    <!-- Social Media Meta Tags -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content="Story Mode is a cutting edge audio branding and UX sound design studio in Montreal, Canada. We care about making interactive audio unforgettable." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.storymode.ca" />
+    <meta property="og:image" content="https://www.storymode.ca/social-preview.jpg" />
+    
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content="Story Mode is a cutting edge audio branding and UX sound design studio in Montreal, Canada." />
+    <meta name="twitter:image" content="https://www.storymode.ca/social-preview.jpg" />
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <header class="fixed w-full top-0 z-50 bg-green-400 text-white">
+      <nav class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="/" class="text-3xl font-editorial">Story Mode</a>
+        <div class="space-x-8">
+          <a href="/works" class="hover:underline">Works</a>
+          <a href="/about" class="hover:underline">About</a>
+          <a href="/blog" class="hover:underline">Blog</a>
+          <a href="/sounds" class="hover:underline">Sounds</a>
+          <a href="/contact" class="hover:underline">Contact</a>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Add a spacer div to prevent content from being hidden under the fixed header -->
+    <div class="h-20"></div>
+
+    <slot />
+
+    <footer class="bg-indigo-500 text-white py-4">
+      <div class="max-w-6xl mx-auto px-4 text-center">
+        <p>&copy; {new Date().getFullYear()} Story Mode</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  @font-face {
+    font-family: 'Editorial';
+    src: url('/fonts/PPEditorialNew-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  :root {
+    --font-editorial: 'Editorial', serif;
+  }
+
+  .font-editorial {
+    font-family: var(--font-editorial);
+  }
+</style>

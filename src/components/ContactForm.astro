@@ -1,0 +1,179 @@
+---
+interface FormData {
+  name: string;
+  email: string;
+  message: string;
+}
+---
+
+<form id="contact-form" class="space-y-6">
+  <div>
+    <label for="name" class="block text-lg mb-2">Name</label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      required
+      minlength="2"
+      maxlength="100"
+      placeholder="Your name (2-100 characters)"
+      class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400"
+    />
+    <p class="text-sm text-gray-600 mt-1">Must be between 2 and 100 characters</p>
+  </div>
+  
+  <div>
+    <label for="email" class="block text-lg mb-2">Email</label>
+    <input
+      type="email"
+      id="email"
+      name="email"
+      required
+      pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
+      placeholder="your.email@example.com"
+      class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400"
+    />
+    <p class="text-sm text-gray-600 mt-1">Please enter a valid email address</p>
+  </div>
+  
+  <div>
+    <label for="message" class="block text-lg mb-2">Message</label>
+    <textarea
+      id="message"
+      name="message"
+      required
+      minlength="10"
+      maxlength="1000"
+      rows="6"
+      placeholder="Your message (10-1000 characters)"
+      class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400"
+    ></textarea>
+    <p class="text-sm text-gray-600 mt-1">Must be between 10 and 1000 characters</p>
+  </div>
+  
+  <button
+    type="submit"
+    class="bg-green-400 text-white px-8 py-3 rounded-lg text-lg hover:bg-green-500 transition-colors"
+  >
+    Send Message
+  </button>
+
+  <div id="form-status" class="hidden p-4 rounded-lg">
+    <p class="success hidden text-green-600 bg-green-50 p-3 rounded-lg">Thanks for your message! We'll get back to you soon.</p>
+    <p class="error hidden text-red-600 bg-red-50 p-3 rounded-lg"></p>
+  </div>
+</form>
+
+<script>
+  interface FormData {
+    name: string;
+    email: string;
+    message: string;
+  }
+
+  interface SubmitResponse {
+    success: boolean;
+    messageId?: string;
+    error?: string;
+  }
+
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const formStatus = document.getElementById('form-status');
+  const successMessage = formStatus?.querySelector('.success');
+  const errorMessage = formStatus?.querySelector('.error');
+
+  const validateForm = (data: FormData): string | null => {
+    if (!data.name || data.name.length < 2) {
+      return 'Name must be at least 2 characters long';
+    }
+    if (data.name.length > 100) {
+      return 'Name must not exceed 100 characters';
+    }
+    if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+      return 'Please enter a valid email address (e.g., name@example.com)';
+    }
+    if (!data.message || data.message.length < 10) {
+      return 'Message must be at least 10 characters long';
+    }
+    if (data.message.length > 1000) {
+      return 'Message must not exceed 1000 characters';
+    }
+    return null;
+  };
+
+  const updateCharCount = (input: HTMLTextAreaElement | HTMLInputElement, counterId: string) => {
+    const counter = document.getElementById(counterId);
+    if (counter) {
+      const remaining = input.maxLength - input.value.length;
+      counter.textContent = `${remaining} characters remaining`;
+    }
+  };
+
+  // Add character counters
+  const messageInput = form.querySelector('#message') as HTMLTextAreaElement;
+  const nameInput = form.querySelector('#name') as HTMLInputElement;
+
+  if (messageInput && nameInput) {
+    messageInput.addEventListener('input', () => updateCharCount(messageInput, 'message-counter'));
+    nameInput.addEventListener('input', () => updateCharCount(nameInput, 'name-counter'));
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Reset status messages
+    formStatus?.classList.add('hidden');
+    successMessage?.classList.add('hidden');
+    errorMessage?.classList.add('hidden');
+
+    // Disable submit button while processing
+    const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    submitButton.disabled = true;
+    submitButton.textContent = 'Sending...';
+
+    try {
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData) as unknown as FormData;
+      
+      // Client-side validation
+      const validationError = validateForm(data);
+      if (validationError) {
+        throw new Error(validationError);
+      }
+
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json() as SubmitResponse;
+
+      if (!response.ok) {
+        throw new Error(result.error || `HTTP error! status: ${response.status}`);
+      }
+
+      if (result.success) {
+        formStatus?.classList.remove('hidden');
+        successMessage?.classList.remove('hidden');
+        form.reset();
+      } else {
+        throw new Error(result.error || 'Failed to send email');
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      formStatus?.classList.remove('hidden');
+      errorMessage?.classList.remove('hidden');
+      
+      if (error instanceof Error) {
+        (errorMessage as HTMLElement).textContent = error.message;
+      }
+    } finally {
+      // Re-enable submit button
+      submitButton.disabled = false;
+      submitButton.textContent = 'Send Message';
+    }
+  });
+</script>

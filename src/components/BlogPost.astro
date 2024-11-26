@@ -1,0 +1,19 @@
+---
+interface Props {
+  title: string;
+  date: string;
+  excerpt: string;
+  slug: string;
+}
+
+const { title, date, excerpt, slug } = Astro.props;
+---
+
+<article class="mb-12">
+  <h2 class="text-3xl font-editorial mb-2">
+    <a href={`/blog/${slug}`} class="hover:text-blue-600">{title}</a>
+  </h2>
+  <p class="text-gray-600 mb-4">{date}</p>
+  <p class="text-lg">{excerpt}</p>
+  <a href={`/blog/${slug}`} class="text-blue-600 hover:underline mt-4 inline-block">Read more →</a>
+</article>

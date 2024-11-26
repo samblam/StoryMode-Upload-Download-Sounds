@@ -1,0 +1,23 @@
+{
+  "name": "storymode-website",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/tailwind": "^5.1.0",
+    "@astrojs/mdx": "^2.1.1",
+    "@astrojs/node": "^7.0.4",
+    "@astrojs/netlify": "^4.1.1",
+    "astro": "^4.4.0",
+    "nodemailer": "^6.9.9",
+    "tailwindcss": "^3.4.1",
+    "howler": "^2.2.4",
+    "multer": "^1.4.5-lts.1"
+  }
+}

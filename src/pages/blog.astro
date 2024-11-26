@@ -1,0 +1,36 @@
+---
+import Layout from '../layouts/Layout.astro';
+import BlogPost from '../components/BlogPost.astro';
+
+const posts = [
+  {
+    title: "The Art of UI Sound Design",
+    date: "February 15, 2024",
+    excerpt: "How tiny sounds make a huge difference in user experience...",
+    slug: "ui-sound-design"
+  },
+  {
+    title: "Creating Sonic Identities",
+    date: "February 1, 2024",
+    excerpt: "What makes a brand sound as unique as it looks?",
+    slug: "sonic-identities"
+  },
+  {
+    title: "The Psychology of Sound",
+    date: "January 15, 2024",
+    excerpt: "Understanding how sound affects human behavior and emotion...",
+    slug: "sound-psychology"
+  }
+];
+---
+
+<Layout title="Blog | Story Mode">
+  <main class="min-h-screen bg-white">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+      <h1 class="text-6xl font-editorial mb-12">Blog</h1>
+      <div class="max-w-4xl">
+        {posts.map(post => <BlogPost {...post} />)}
+      </div>
+    </div>
+  </main>
+</Layout>

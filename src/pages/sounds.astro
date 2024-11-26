@@ -1,0 +1,76 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SoundProfile from '../components/SoundProfile.astro';
+import SoundUploader from '../components/SoundUploader.astro';
+import fs from 'fs/promises';
+import path from 'path';
+
+// Read sounds data from JSON file
+let profiles = [
+  {
+    title: "Playful & Fun",
+    description: "Light, engaging sounds perfect for casual apps and games",
+    sounds: []
+  },
+  {
+    title: "Professional & Clean",
+    description: "Polished sounds for business applications",
+    sounds: []
+  },
+  {
+    title: "Modern & Minimal",
+    description: "Contemporary, understated sound effects",
+    sounds: []
+  },
+  {
+    title: "Bold & Impactful",
+    description: "Strong, attention-grabbing sound effects",
+    sounds: []
+  }
+];
+
+try {
+  const soundsDataPath = path.join(process.cwd(), 'public', 'sounds', 'sounds-data.json');
+  const data = await fs.readFile(soundsDataPath, 'utf-8');
+  const soundsData = JSON.parse(data);
+
+  // Organize sounds by profile
+  soundsData.forEach((sound: any) => {
+    const profile = profiles.find(p => 
+      p.title.toLowerCase().startsWith(sound.profile.toLowerCase())
+    );
+    if (profile) {
+      profile.sounds.push({
+        name: sound.name,
+        description: sound.description,
+        file: sound.file
+      });
+    }
+  });
+} catch (error) {
+  // If file doesn't exist or can't be read, use empty arrays
+  console.error('Error reading sounds data:', error);
+}
+
+const isAdmin = true; // In production, this should be determined by authentication
+---
+
+<Layout title="Sound Library | Story Mode">
+  <main class="min-h-screen bg-gray-100 py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <h1 class="text-6xl font-editorial mb-8">Sound Library</h1>
+      <p class="text-2xl mb-12">
+        Explore our collection of sound effects organized by profile. 
+        Feel free to play and download them for your projects.
+      </p>
+      
+      {isAdmin && <SoundUploader />}
+      
+      <div class="space-y-12">
+        {profiles.map(profile => (
+          <SoundProfile {...profile} />
+        ))}
+      </div>
+    </div>
+  </main>
+</Layout>
